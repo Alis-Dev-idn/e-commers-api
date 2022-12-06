@@ -5,5 +5,6 @@ const Users = Router();
 
 Users.get("/", UsersController.GetUser);
 Users.post("/", UsersController.CreateUser);
+Users.delete("/:id", UsersController.DeleteUser);
 
 export default Users;

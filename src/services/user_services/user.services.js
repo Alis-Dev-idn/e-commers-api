@@ -37,6 +37,12 @@ class UserServices {
         await result.save();
         return "ok";
     }
+
+    static async DeleteUser(id) {
+        await UserModel.deleteOne({_id: id});
+        await UserDataModels.deleteOne({_id: id});
+        return "ok";
+    }
 }
 
 export default UserServices;
