@@ -10,6 +10,11 @@ class JoiServices {
         date_brith: joi.date().required(),
         gender: joi.string().required()
     });
+
+    static UserLogin = joi.object({
+        username: joi.string().min(5).required(),
+        password: joi.string().min(6).required()
+    })
 }
 
 export default JoiServices;

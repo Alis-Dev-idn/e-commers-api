@@ -1,7 +1,23 @@
 import {UserModel, UserDataModels} from "../../database/database.js";
 import {UserData} from "../../mockup/first.data.js";
+import {HastServices} from "../services.js";
+import {GenerateToken} from "../../utils/utils.js";
 
 class UserServices {
+
+    static async UserLogin(username, password) {
+        const dataUser = await this.GetUser("username", username);
+        if(!dataUser) throw({status: 400, message: "Username not found"});
+        if(! await HastServices.ValidatePassword(password, dataUser.password)) throw ({status: 400, message: "Password not match"});
+        if(!dataUser.active) throw({status: 400, message: "Your account not active"});
+        return {
+            id: dataUser._id,
+            username: dataUser.username,
+            email: dataUser.email,
+            role: dataUser.role,
+            token: await GenerateToken(dataUser._id)
+        }
+    }
 
     static async GetUser(by, data, hidden) {
         if(by === "id") {
