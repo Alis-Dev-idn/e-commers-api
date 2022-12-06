@@ -7,12 +7,20 @@ import http from "http";
 import https from "https";
 import fileUpload from "express-fileupload";
 import fs from "fs";
+import {ConnectDb} from "../database/database.js";
 import Routes from "../routes/routes.js";
 
 const StartServer = () => {
     let server;
     const host = process.env.HOST_URL;
     const port = process.env.HOST_PORT;
+
+    const url_db = process.env.MONGODB_URL;
+    const port_db = process.env.MONGODB_PORT;
+    const user_db = process.env.MONGODB_USER;
+    const pwd_db = process.env.MONGODB_PWD;
+    const db = process.env.MONGODB_DB;
+
     const app = express();
 
     app.use(cors());
@@ -34,6 +42,7 @@ const StartServer = () => {
     app.use("/", Routes);
 
     server.listen(port, () => {
+        ConnectDb(url_db, port_db, user_db, pwd_db, db);
         console.log(`Server is running in ${process.env.USE_SSL === "true"? "https://" : "http://"}${host}:${port}`)
     });
 }

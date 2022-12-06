@@ -12,6 +12,7 @@ pada pembuatan API ini menggunakan bahasa pemrograman javaScript, yaitu Nodejs s
 |:------:|:--------:|
 |Expressjs|  4.18.2  |
 |nodejs| v16.18.0 |
+|mongodb| v5.0.2|
 
 ## 3. Dokumentasi
 untuk dokumentasi menyusul ...
