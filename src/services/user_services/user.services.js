@@ -8,7 +8,7 @@ class UserServices {
     static async UserLogin(username, password) {
         const dataUser = await this.GetUser("username", username);
         if(!dataUser) throw({status: 400, message: "Username not found"});
-        if(! await HastServices.ValidatePassword(password, dataUser.password)) throw ({status: 400, message: "Password not match"});
+        if(! await HastServices.ValidatePassword(password, dataUser.password)) throw ({status: 400, message: "Password wrong"});
         if(!dataUser.active) throw({status: 400, message: "Your account not active"});
         return {
             id: dataUser._id,
@@ -17,6 +17,26 @@ class UserServices {
             role: dataUser.role,
             token: await GenerateToken(dataUser._id)
         }
+    }
+
+    static async UserUpdate(id, data) {
+        const cekUser = await this.GetUser("id", id, false);
+        if(!data) throw({status: 400, message: "No update data"});
+        if(data.username) cekUser.username = data.username;
+        if(data.email) cekUser.email = data.email;
+        if(data.no_hp) cekUser.no_hp = data.no_hp;
+        if(data.date_brith) cekUser.date_brith = data.date_brith;
+        if(data.gender) cekUser.gender = data.gender;
+        if(data.password){
+            if(! await HastServices.ValidatePassword(data.password, cekUser.password)) throw({status: 400, message: "Password wrong"});
+            if(data.password === data.new_password) throw({status: 400, message: "the password cannot be the same as the old one"});
+            if(!data.new_password) throw({status: 400, message: "New password required"});
+            if(!data.confirm_password) throw({status: 400, message: "Confirm new password required"});
+            if(data.new_password !== data.confirm_password) throw({status: 400, message: "new password and confirm password not match"});
+            cekUser.password = await HastServices.HastPassword(data.new_password);
+        }
+        await UserModel.findOneAndUpdate({_id: id}, cekUser);
+        return "update ok";
     }
 
     static async GetUser(by, data, hidden) {
